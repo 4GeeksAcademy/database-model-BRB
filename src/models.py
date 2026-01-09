@@ -19,6 +19,27 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
 
+class Planet(db.Model):
+    name = db.Column(db.String, Unique =True, nullable=False)
+    atmosphere = db.Column(db.String, Unique =False, nullable=False)
+    livable = db.Column(db.String, Unique =False, nullable=False)
+    add_to_fav = db.Column(db.Integer, db.ForeignKey("favorites.item"))
+
+class Animals(db.Model):
+    name = db.Column(db.String, Unique =True, nullable=False)
+    species = db.Column(db.String, Unique =False, nullable=False)
+    diet = db.Column(db.String, Unique =False, nullable=False)
+
+class Character(db.Model):
+    name = db.Column(db.String, Unique =True, nullable=False)
+    origin = db.Column(db.String, Unique =False, nullable=False)
+    height = db.Column(db.String, Unique =False, nullable=False)
+    add_to_fav = db.Column(db.Integer, db.ForeignKey("favorites.item"))
+
+class Favorites(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    item = db.Column(db.String, Unique = False, nullable=True)
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key = True)
