@@ -8,35 +8,35 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(50), unique=False, nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(15), unique=False, nullable=False)
 
 # foreign key to favs
-    favorites_id = db.Column(db.String, db.ForeignKey("favorites.id"))
+    favorites_id = db.Column(db.Integer, db.ForeignKey("favorites.id"))
 
 # relationships
-    favorites = relationships('Favorites', back_populates = 'user')
-    planet = relationships('Planet', back_populates = 'user')
-    animals = relationships('Animals', back_populates = 'user')
-    character = relationships('Character', back_populates = 'user')
-    posts = relationships('Post', back_populates = 'posts')
-    messages = relationships('Messages', back_populates = 'messages')
+    favorites.id = relationship('Favorites', back_populates = 'user.id')
+    planet = relationship('Planet', back_populates = 'user')
+    animals = relationship('Animals', back_populates = 'user')
+    character = relationship('Character', back_populates = 'user')
+    posts = relationship('Post', back_populates = 'post')
+    messages = relationship('Messages', back_populates = 'messages')
+
 
 
     def serialize(self):
         return {
             "id": self.id,
             "email": self.email,
-            "user_id": self.user_id,
-            # do not serialize the password, its a security breach
+            "user_id": self.user_id
+            #do not serialize the password, its a security breach
         }
-
 
 class Favorites(db.Model):
     __tablename__ = 'favorites'
     id = db.Column(db.Integer, primary_key=True)
-    item = db.Column(db.String, Unique = False, nullable=True)
-    add_to_fav = db.Column(db.Integer, db.ForeignKey("favorites.item"))
+    item = db.Column(db.String(100), Unique = False, nullable=True)
+  
 
 
 # foreign key to favs
@@ -44,10 +44,10 @@ class Favorites(db.Model):
 
 
 # relationships
-    user.id = relationships('User', back_populates = 'favorites')
-    planet= relationships('Planet', back_populates = 'favorites')
-    animals = relationships('Animals', back_populates = 'favorites')
-    character = relationships('Character', back_populates = 'favorites')
+    user.id = relationship('User', back_populates = 'favorites.id')
+    planet= relationship('Planet', back_populates = 'favorites')
+    animals = relationship('Animals', back_populates = 'favorites')
+    character = relationship('Character', back_populates = 'favorites')
 
 class Planet(db.Model):
     __tablename__ = 'planet'
@@ -85,7 +85,6 @@ class Character(db.Model):
     origin = db.Column(db.String, Unique =False, nullable=False)
     height = db.Column(db.String, Unique =False, nullable=False)
 
-
 # foreign keys for user & favorites
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     favorites_id = db.Column(db.Integer, db.ForeignKey("favorites.id"))
@@ -95,7 +94,7 @@ class Character(db.Model):
     favorites.id = relationships('Favorites', back_populates = 'character')
 
 class Post(db.Model):
-     __tablename__ = 'posts'
+     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key = True)
     date = db.Column(db.Integer, unique=False, nullable=False)
 
@@ -104,15 +103,15 @@ class Post(db.Model):
     favorites_id = db.Column(db.Integer, db.ForeignKey("favorites.id"))
 
 # relationships
-    user.id = relationships('User', back_populates = 'posts')
-    favorites.id = relationships('Favorites', back_populates = 'posts')
+    user.id = relationships('User', back_populates = 'post')
+    favorites.id = relationships('Favorites', back_populates = 'post')
 
 class Messages(db.Model):
     __tablename__ = 'messages'
-     inbox = db.Column(db.String(500), unique=False, nullable=True)
+     inbox = db.Column(db.String, unique=False, nullable=True)
      time_stamp = db.Column(db.Integer, unique=False, nullable=True)
-     sender = db.Column(db.String(25), unique=False, nullable=True)
-     recipient = db.Column(db.String(25), unique=False, nullable=True)
+     sender = db.Column(db.String, unique=False, nullable=True)
+     recipient = db.Column(db.String, unique=False, nullable=True)
 
 # foreign keys for user
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -121,10 +120,8 @@ class Messages(db.Model):
      user.id = relationships('User', back_populates = 'messages')
 
 
-
-
 class List (db.Model):
-     friend_id = db.Column(db.String(25), unique=True, nullable=False)
+     friend_id = db.Column(db.String, unique=True, nullable=False)
      friend_image = db.Column(nullable=True)
    
 
